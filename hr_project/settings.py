@@ -56,15 +56,16 @@ WSGI_APPLICATION = 'hr_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hr_db',
-        'USER': '3VqWxQFnwD5iy1.root',
-        'PASSWORD': 'x6S82iYuKX1MLuq8',
-        'HOST': 'gateway01.ap-northeast-1.prod.aws.tidbcloud.com',
-        'PORT': '4000',
+        'NAME': os.environ.get('DB_NAME', 'hr_db'),
+        'USER': os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '4000'),
         'OPTIONS': {
             'charset': 'utf8mb4',
             'ssl': {
-                'ssl_mode': 'REQUIRED',
+                'ssl_mode': 'VERIFY_IDENTITY',
+                'ca': '/etc/ssl/certs/ca-certificates.crt',  # مسار الشهادات الافتراضي في لينكس
             },
         },
         'check_database_version': False,
