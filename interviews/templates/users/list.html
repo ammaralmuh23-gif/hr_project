@@ -20,6 +20,7 @@
         .inactive { color: red; font-weight: bold; }
         select { padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-family: Tahoma; }
         .pass-col { color: #e74c3c; font-weight: bold; font-size: 15px; }
+        .reset-section { margin-top: 30px; text-align: center; }
     </style>
 </head>
 <body>
@@ -62,10 +63,16 @@
                     {% if u.is_active %}<span class="active">نشط</span>{% else %}<span class="inactive">موقوف</span>{% endif %}
                 </td>
                 <td>
+                    <!-- زر التفعيل/الإيقاف -->
                     <a href="{% url 'user-toggle' u.id %}" class="btn {% if u.is_active %}btn-red{% else %}btn-green{% endif %}" style="margin-left: 5px;">
                         {% if u.is_active %}إيقاف{% else %}تفعيل{% endif %}
                     </a>
-                    <a href="{% url 'user-edit' u.id %}" class="btn btn-orange">✏️ تعديل</a>
+                    
+                    <!-- زر التعديل -->
+                    <a href="{% url 'user-edit' u.id %}" class="btn btn-orange" style="margin-left: 5px;">✏️ تعديل</a>
+                    
+                    <!-- زر الحذف (جديد) -->
+                    <a href="{% url 'user-delete' u.id %}" class="btn btn-red" onclick="return confirm('هل أنت متأكد من حذف هذا المستخدم نهائياً؟');">🗑️ حذف</a>
                 </td>
             </tr>
         {% empty %}
@@ -73,6 +80,13 @@
         {% endfor %}
         </tbody>
     </table>
+
+    <!-- زر تصفير الحسابات (جديد) -->
+    <div class="reset-section">
+        <a href="{% url 'reset-users' %}" class="btn btn-dark" style="background-color: #c0392b; padding: 10px 20px; font-size: 16px;" onclick="return confirm('هل أنت متأكد من مسح جميع المستخدمين (عدا Admin) وإرجاع الترقيم من 1؟');">
+            🗑️ تصفير الحسابات (مسح الكل ما عدا Admin)
+        </a>
+    </div>
 </div>
 </body>
 </html>
