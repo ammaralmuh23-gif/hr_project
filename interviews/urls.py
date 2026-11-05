@@ -19,4 +19,6 @@ urlpatterns = [
     path('signup/', views.SignUpView.as_view(), name='signup'),
     path('users/<int:user_id>/password/', views.change_user_password, name='user-password'),
     path('users/<int:user_id>/edit/', views.edit_user, name='user-edit'),
+    path('users/<int:user_id>/delete/', views.delete_user, name='user-delete'),
+    path('reset-users/', views.reset_all_users, name='reset-users'),
 ]
