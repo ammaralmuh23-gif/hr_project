@@ -58,6 +58,9 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT', '4000'),
         'OPTIONS': {
             'charset': 'utf8mb4',
+            'ssl': {
+                'ssl_mode': 'VERIFY_IDENTITY',  # أو 'REQUIRED'
+            },
         },
         'check_database_version': False, # لـ TiDB
     }
