@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # إعدادات الأمان (يُفضل تغييرها عبر Render لاحقاً)
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-3#g$+y1k2m4n5p6q7r8s9t0u1v2w3x4y5z')
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ['*'] # أو ['hr-project-qdgj.onrender.com', 'localhost', '127.0.0.1']
 
 # التطبيقات
