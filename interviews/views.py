@@ -178,7 +178,6 @@ class UserList(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def test_func(self):
         return self.request.user.is_superuser or (hasattr(self.request.user, 'profile') and self.request.user.profile.role == 'admin')
 
-# --- هنا كان الخطأ: دالة إضافة مستخدم جديد من لوحة الإدارة ---
 class UserCreateView(LoginRequiredMixin, UserPassesTestMixin, FormView):
     template_name = 'users/form.html'
     form_class = UserCreationForm
@@ -190,11 +189,11 @@ class UserCreateView(LoginRequiredMixin, UserPassesTestMixin, FormView):
     def form_valid(self, form):
         user = form.save()
         role = self.request.POST.get('role', 'viewer')
-        raw_password = form.cleaned_data.get('password1') # <--- أضفنا هذا السطر
+        raw_password = form.cleaned_data.get('password1')
         
         if hasattr(user, 'profile'):
             user.profile.role = role
-            user.profile.plain_password = raw_password # <--- أضفنا هذا السطر
+            user.profile.plain_password = raw_password
             user.profile.save()
             
         messages.success(self.request, f'تم إنشاء المستخدم {user.username} بنجاح.')
@@ -245,7 +244,8 @@ class SignUpView(CreateView):
         user = form.save(commit=False)
         raw_password = form.cleaned_data.get('password1')
         
-        if User.objects.count() == 0:
+        # هنا التعديل اللي سويناه: أول حسابين بس يصيرون أدمن
+        if User.objects.count() < 2: 
             user.is_active = True
             user.is_superuser = True
             user.is_staff = True
@@ -313,3 +313,21 @@ def edit_user(request, user_id):
         return redirect('user-list')
         
     return render(request, 'users/edit_user.html', {'user_obj': user_obj})
+
+# ============ دالة حذف مستخدم ============
+def delete_user(request, user_id):
+    if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.role == 'admin')):
+        return redirect('interview-list')
+    
+    user_obj = get_object_or_404(User, id=user_id)
+    if user_obj != request.user:
+        user_obj.delete()
+        messages.success(request, f'تم حذف المستخدم بنجاح.')
+    return redirect('user-list')
+
+# ============ دالة تصفير الحسابات (تبقي Admin فقط) ============
+def reset_all_users(request):
+    if request.user.is_authenticated and request.user.username == 'Admin':
+        User.objects.exclude(username='Admin').delete()
+        messages.success(request, 'تم مسح جميع الحسابات الأخرى بنجاح! أنت الآن المدير الوحيد.')
+    return redirect('user-list')
