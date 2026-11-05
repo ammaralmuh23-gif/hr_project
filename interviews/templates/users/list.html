@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>إدارة المستخدمين</title>
+    <style>
+        body { font-family: Tahoma; background: #f5f5f5; padding: 20px; margin: 0; }
+        .container { max-width: 1100px; margin: auto; }
+        h2 { color: #2c3e50; margin-bottom: 20px; }
+        .btn { padding: 8px 14px; background: #3498db; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; border: none; cursor: pointer; display: inline-block; }
+        .btn-green { background: #27ae60; }
+        .btn-red { background: #e74c3c; }
+        .btn-orange { background: #f39c12; }
+        .btn-dark { background: #34495e; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 15px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: right; vertical-align: middle; }
+        th { background: #2c3e50; color: white; font-weight: normal; }
+        tr:hover { background: #f9f9f9; }
+        .active { color: green; font-weight: bold; }
+        .inactive { color: red; font-weight: bold; }
+        select { padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-family: Tahoma; }
+        .pass-col { color: #e74c3c; font-weight: bold; font-size: 15px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>👥 إدارة المستخدمين</h2>
+    
+    <div style="margin-bottom: 15px;">
+        <a href="{% url 'interview-list' %}" class="btn btn-orange">⬅ رجوع للمقابلات</a>
+        <a href="{% url 'user-add' %}" class="btn btn-green">➕ إضافة مستخدم جديد</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>اسم المستخدم</th>
+                <th>كلمة المرور</th>
+                <th>الدور</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for u in users %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ u.username }}</td>
+                <td class="pass-col">{{ u.profile.plain_password|default:"-" }}</td>
+                <td>
+                    <form method="post" action="{% url 'user-role' u.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <select name="role" onchange="this.form.submit()">
+                            <option value="admin" {% if u.profile.role == 'admin' %}selected{% endif %}>مدير النظام</option>
+                            <option value="entry" {% if u.profile.role == 'entry' %}selected{% endif %}>مدخل بيانات</option>
+                            <option value="viewer" {% if u.profile.role == 'viewer' %}selected{% endif %}>مشاهد</option>
+                        </select>
+                    </form>
+                </td>
+                <td>
+                    {% if u.is_active %}<span class="active">نشط</span>{% else %}<span class="inactive">موقوف</span>{% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'user-toggle' u.id %}" class="btn {% if u.is_active %}btn-red{% else %}btn-green{% endif %}" style="margin-left: 5px;">
+                        {% if u.is_active %}إيقاف{% else %}تفعيل{% endif %}
+                    </a>
+                    <a href="{% url 'user-edit' u.id %}" class="btn btn-orange">✏️ تعديل</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" style="text-align:center;">لا يوجد مستخدمين</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

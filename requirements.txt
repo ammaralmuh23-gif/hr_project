@@ -1,0 +1,9 @@
+Django==4.2.30
+mysqlclient==2.3.0
+openpyxl==3.1.5
+reportlab==5.1.0
+arabic-reshaper==3.0.0
+python-bidi==0.6.6
+whitenoise==6.12.0
+gunicorn==21.2.0
+Pillow==13.0.0

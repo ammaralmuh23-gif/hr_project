@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>إنشاء حساب جديد</title>
+    <style>
+        body { font-family: Tahoma; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 400px; }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .btn-cancel { background: #95a5a6; margin-top: 5px; text-align: center; text-decoration: none; display: block; color: white; padding: 12px; border-radius: 5px; }
+        .helptext { font-size: 12px; color: #7f8c8d; display: block; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>إنشاء حساب جديد</h2>
+        <form method="post">
+            {% csrf_token %}
+                       {% for field in form %}
+                <div class="form-group">
+                    <label>{{ field.label }}:</label>
+                    
+                    {% if field.name == 'password1' or field.name == 'password2' %}
+                        <!-- حقل الباسورد مع أيقونة العين -->
+                        <div style="position: relative;">
+                            <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}" required style="width: 100%; padding: 10px; padding-left: 40px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;">
+                            <span onclick="togglePassword('{{ field.id_for_label }}', this)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none;">👁️</span>
+                        </div>
+                    {% else %}
+                        <!-- باقي الحقول عادي -->
+                        {{ field }}
+                    {% endif %}
+
+                    {% if field.help_text %}
+                        <span class="helptext">{{ field.help_text }}</span>
+                    {% endif %}
+                    {% if field.errors %}
+                        <span style="color:red; font-size:12px;">{{ field.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+           
+            
+            <button type="submit">تسجيل الحساب</button>
+            <a href="{% url 'login' %}" class="btn-cancel">رجوع لتسجيل الدخول</a>
+        </form>
+    </div>
+        <script>
+        function togglePassword(fieldId, icon) {
+            const input = document.getElementById(fieldId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.innerHTML = "🙈"; // عين مغمضة
+            } else {
+                input.type = "password";
+                icon.innerHTML = "👁️"; // عين مفتوحة
+            }
+        }
+    </script>
+</body>
+</html>
