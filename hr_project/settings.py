@@ -1,12 +1,15 @@
 from pathlib import Path
-import os 
+import os
+
+# المسار الأساسي
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-3#g$+y1k2m4n5p6q7r8s9t0u1v2w3x4y5z'
-
+# إعدادات الأمان (يُفضل تغييرها عبر Render لاحقاً)
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-3#g$+y1k2m4n5p6q7r8s9t0u1v2w3x4y5z')
 DEBUG = False
-ALLOWED_HOSTS = ['*'] # مؤقتاً، نغيرها بعدين لرابط Render
+ALLOWED_HOSTS = ['*'] # أو ['hr-project-qdgj.onrender.com', 'localhost', '127.0.0.1']
 
+# التطبيقات
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -17,9 +20,10 @@ INSTALLED_APPS = [
     'interviews',
 ]
 
+# برمجيات الوسيطة (Middleware)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-     'whitenoise.middleware.WhiteNoiseMiddleware', # <--- أضف هذا
+    'whitenoise.middleware.WhiteNoiseMiddleware', # ضروري لملفات CSS
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -48,6 +52,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hr_project.wsgi.application'
 
+# قاعدة البيانات (TiDB Cloud)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -59,15 +64,14 @@ DATABASES = {
         'OPTIONS': {
             'charset': 'utf8mb4',
             'ssl': {
-                'ssl_mode': 'VERIFY_IDENTITY',  # أو 'REQUIRED'
+                'ssl_mode': 'REQUIRED',  # ضروري لـ TiDB على Render
             },
         },
-        'check_database_version': False, # لـ TiDB
+        'check_database_version': False,
     }
 }
 
-
-
+# التحقق من كلمات المرور
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -75,19 +79,24 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# اللغة والتوقيت
 LANGUAGE_CODE = 'ar'
 TIME_ZONE = 'Asia/Baghdad'
 USE_I18N = True
 USE_TZ = True
 
+# الملفات الثابتة (CSS/JS/Images)
 STATIC_URL = 'static/'
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# إعدادات المصادقة
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'interview-list'
-LOGOUT_REDIRECT_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# إعدادات المصادقة (تسجيل الدخول)
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'interview-list'
+LOGOUT_REDIRECT_URL = 'login'
+
+# إعدادات الأمان لـ Render
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
