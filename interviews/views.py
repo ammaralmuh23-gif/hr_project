@@ -244,8 +244,8 @@ class SignUpView(CreateView):
         user = form.save(commit=False)
         raw_password = form.cleaned_data.get('password1')
         
-        # هنا التعديل اللي سويناه: أول حسابين بس يصيرون أدمن
-      if User.objects.count() == 0:
+        # أول حساب فقط يصير أدمن
+        if User.objects.count() == 0: 
             user.is_active = True
             user.is_superuser = True
             user.is_staff = True
@@ -329,5 +329,5 @@ def delete_user(request, user_id):
 def reset_all_users(request):
     if request.user.is_authenticated and request.user.username == 'Admin':
         User.objects.exclude(username='Admin').delete()
-        messages.success(request, 'تم مسح جميع الحسابات الأخرى بنجاح! أنت الآن المدير الوحيد.')
+        messages.success(self.request, 'تم مسح جميع الحسابات الأخرى بنجاح! أنت الآن المدير الوحيد.')
     return redirect('user-list')
