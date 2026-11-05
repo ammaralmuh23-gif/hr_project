@@ -245,7 +245,7 @@ class SignUpView(CreateView):
         user = form.save(commit=False)
         raw_password = form.cleaned_data.get('password1')
         
-       if User.objects.count() < 2:  # <--- غيرناها من 0 إلى 2
+        if User.objects.count() < 2:
             user.is_active = True
             user.is_superuser = True
             user.is_staff = True
