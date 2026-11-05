@@ -63,10 +63,7 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT', '4000'),
         'OPTIONS': {
             'charset': 'utf8mb4',
-            'ssl': {
-                'ssl_mode': 'VERIFY_IDENTITY',
-                'ca': '/etc/ssl/certs/ca-certificates.crt',  # مسار الشهادات الافتراضي في لينكس
-            },
+            'ssl_mode': 'REQUIRED',  # هذا هو الحل
         },
         'check_database_version': False,
     }
