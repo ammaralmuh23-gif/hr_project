@@ -245,7 +245,7 @@ class SignUpView(CreateView):
         raw_password = form.cleaned_data.get('password1')
         
         # هنا التعديل اللي سويناه: أول حسابين بس يصيرون أدمن
-        if User.objects.count() < 2: 
+      if User.objects.count() == 0:
             user.is_active = True
             user.is_superuser = True
             user.is_staff = True
